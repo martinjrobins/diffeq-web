@@ -1,26 +1,31 @@
-import React from 'react';
-import logo from './logo.svg';
 import Editor from './editor/Editor';
 import Sliders from './sliders/Sliders';
-import Plot from './plot/Plot';
-import { Stack, Grid, ThemeProvider } from '@mui/material';
+import { ThemeProvider, Box } from '@mui/material';
 import Header from './header/Header';
 import theme from './theme';
 import { ModelProvider } from './context/model';
+import { Allotment } from 'allotment';
+import "allotment/dist/style.css";
+import Chart from './chart/Chart';
 
 
 function App() {
   return (
     <ThemeProvider theme={theme}>
     <ModelProvider>
+      <Box sx={{
+        height: '100vh',
+        width: '100vw',
+      }}>
       <Header />
-      <Stack direction="row" spacing={2}>
+      <Allotment vertical={false} >
         <Editor />
-        <Stack direction="column" spacing={2}>
+        <Allotment vertical={true} >
           <Sliders/>
-          <Plot />
-        </Stack>
-      </Stack>
+          <Chart />
+        </Allotment>
+      </Allotment>
+      </Box>
     </ModelProvider>
     </ThemeProvider>
   );

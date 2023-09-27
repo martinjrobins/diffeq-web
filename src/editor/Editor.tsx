@@ -11,7 +11,7 @@ function Editor() {
   return (
     <CodeMirror
       value={code}
-      width="400px"
+      width="100%"
       basicSetup={{
         foldGutter: false,
         dropCursor: false,

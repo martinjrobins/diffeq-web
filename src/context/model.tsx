@@ -1,9 +1,17 @@
 import { Dispatch, createContext, useContext, useReducer } from 'react';
+import { compileModel, compileResponse, Solver, Options, Vector } from '@martinjrobins/diffeq-js';
+
 
 type ModelContextType = {
-  number_of_inputs: number;
-  number_of_outputs: number;
+  inputs: Vector;
+  lowerBound: number[];
+  upperBound: number[];
+  outputs: Vector;
+  timepoints: Vector;
+  solver: Solver;
   code: string;
+  error: string | undefined;
+  compiling: boolean;
 }
 
 const defaultCode = `in = [r, k]
@@ -31,9 +39,15 @@ out_i {
 }`;
 
 export const defaultModel: ModelContextType = {
-  number_of_inputs: 2,
-  number_of_outputs: 2,
+  inputs: new Vector(Array(2).fill(1.0)),
+  outputs: new Vector(Array(2).fill(0.0))),
+  lowerBound: Array(2).fill(0.0),
+  upperBound: Array(2).fill(2.0),
+  timepoints: new Vector(Array(2).fill(0.0)),
   code: defaultCode,
+  error: undefined,
+  compiling: false,
+  solver: new Solver(new Options()),
 };
 
 export const ModelContext = createContext(defaultModel);
@@ -55,9 +69,28 @@ export function ModelProvider({ children }: { children: React.ReactNode} ) {
     defaultModel
   );
 
+  // middleware for compiling model (async)
+  const asyncDispatch = (action: ModelAction) => {
+    if (action.type === 'compile') {
+      dispatch(action);
+      compileModel(model.code).then(() => {
+        const options = new Options();
+        let solver = new Solver(options);
+        const times = new Vector([0, 1]);
+        const outputs = new Vector(new Array(times.length * solver.number_of_outputs));
+        const inputs = new Vector(new Array(solver.number_of_inputs).fill(1.0));
+        const lowerBound = Array(solver.number_of_inputs).fill(0.0);
+        const upperBound = Array(solver.number_of_inputs).fill(2.0);
+        dispatch({ type: 'compiled', times, outputs, inputs, lowerBound, upperBound, solver });
+      });
+    } else {
+      dispatch(action);
+    }
+  }
+
   return (
     <ModelContext.Provider value={model}>
-      <ModelDispatchContext.Provider value={dispatch}>
+      <ModelDispatchContext.Provider value={asyncDispatch}>
         {children}
       </ModelDispatchContext.Provider>
     </ModelContext.Provider>
@@ -69,6 +102,26 @@ type ModelAction = {
 } | {
   type: 'setCode',
   code: string,
+} | {
+  type: 'setInput',
+  value: number,
+  index: number,
+} | {
+  type: 'setLowerBound',
+  value: number,
+  index: number,
+} | {
+  type: 'setUpperBound',
+  value: number,
+  index: number,
+} | {
+  type: 'compiled', 
+  times: Vector, 
+  outputs: Vector, 
+  inputs: Vector, 
+  lowerBound: number[], 
+  upperBound: number[],
+  solver: Solver,
 }
 
 
@@ -81,7 +134,46 @@ function modelReducer(model: ModelContextType, action: ModelAction) {
       };
     }
     case 'compile': {
-      return model;
+      return {
+        ...model,
+        compiling: true,
+      };
+    }
+    case 'compiled': {
+      return {
+        ...model,
+        compiling: false,
+        timepoints: action.times,
+        outputs: action.outputs,
+        inputs: action.inputs,
+        lowerBound: action.lowerBound,
+        upperBound: action.upperBound,
+        Solver: action.solver,
+      };
+    }
+    case 'setInput': {
+      const newInputs = model.inputs;
+      newInputs[action.index] = action.value;
+      return {
+        ...model,
+        inputs: newInputs,
+      };
+    }
+    case 'setLowerBound': {
+      const newLowerBound = model.lowerBound;
+      newLowerBound[action.index] = action.value;
+      return {
+        ...model,
+        lower_bound: newLowerBound,
+      };
+    }
+    case 'setUpperBound': {
+      const newUpperBound = model.upperBound;
+      newUpperBound[action.index] = action.value;
+      return {
+        ...model,
+        upper_bound: newUpperBound,
+      };
     }
     default: {
       // @ts-expect-error
