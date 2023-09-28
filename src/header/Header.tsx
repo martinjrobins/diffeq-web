@@ -4,10 +4,20 @@ import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import SaveIcon from '@mui/icons-material/Save';
 import { useModelDispatch } from '../context/model';
+import { useEffect } from 'react';
 
 export default function ButtonAppBar() {
   const dispatch = useModelDispatch();
+
+  // compile the model on first load
+  useEffect(() => {
+    console.log('compiling on first load');
+    dispatch({ type: 'compile' });
+  }, []);
+
+  // compile the model on click
   const handleCompile = () => {
+    console.log('compiling on click');
     dispatch({ type: 'compile' });
   }
   return (

@@ -3,13 +3,16 @@ import Sliders from './sliders/Sliders';
 import { ThemeProvider, Box } from '@mui/material';
 import Header from './header/Header';
 import theme from './theme';
-import { ModelProvider } from './context/model';
+import { ModelProvider, useModelDispatch } from './context/model';
 import { Allotment } from 'allotment';
 import "allotment/dist/style.css";
 import Chart from './chart/Chart';
+import { useEffect } from 'react';
 
 
 function App() {
+  console.log('app')
+
   return (
     <ThemeProvider theme={theme}>
     <ModelProvider>

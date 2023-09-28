@@ -3,12 +3,12 @@ import { compileModel, compileResponse, Solver, Options, Vector } from '@martinj
 
 
 type ModelContextType = {
-  inputs: Vector;
+  inputs: Vector | undefined;
   lowerBound: number[];
   upperBound: number[];
-  outputs: Vector;
-  timepoints: Vector;
-  solver: Solver;
+  outputs: Vector | undefined;
+  timepoints: Vector | undefined;
+  solver: Solver | undefined;
   code: string;
   error: string | undefined;
   compiling: boolean;
@@ -39,15 +39,15 @@ out_i {
 }`;
 
 export const defaultModel: ModelContextType = {
-  inputs: new Vector(Array(2).fill(1.0)),
-  outputs: new Vector(Array(2).fill(0.0))),
-  lowerBound: Array(2).fill(0.0),
-  upperBound: Array(2).fill(2.0),
-  timepoints: new Vector(Array(2).fill(0.0)),
+  inputs: undefined,
+  outputs: undefined,
+  lowerBound: Array(0),
+  upperBound: Array(0),
+  timepoints: undefined,
   code: defaultCode,
   error: undefined,
   compiling: false,
-  solver: new Solver(new Options()),
+  solver: undefined,
 };
 
 export const ModelContext = createContext(defaultModel);
@@ -72,16 +72,12 @@ export function ModelProvider({ children }: { children: React.ReactNode} ) {
   // middleware for compiling model (async)
   const asyncDispatch = (action: ModelAction) => {
     if (action.type === 'compile') {
+      if (model.compiling) {
+        return;
+      }
       dispatch(action);
       compileModel(model.code).then(() => {
-        const options = new Options();
-        let solver = new Solver(options);
-        const times = new Vector([0, 1]);
-        const outputs = new Vector(new Array(times.length * solver.number_of_outputs));
-        const inputs = new Vector(new Array(solver.number_of_inputs).fill(1.0));
-        const lowerBound = Array(solver.number_of_inputs).fill(0.0);
-        const upperBound = Array(solver.number_of_inputs).fill(2.0);
-        dispatch({ type: 'compiled', times, outputs, inputs, lowerBound, upperBound, solver });
+        dispatch({ type: 'compiled' });
       });
     } else {
       dispatch(action);
@@ -116,12 +112,9 @@ type ModelAction = {
   index: number,
 } | {
   type: 'compiled', 
-  times: Vector, 
-  outputs: Vector, 
-  inputs: Vector, 
-  lowerBound: number[], 
-  upperBound: number[],
-  solver: Solver,
+} | {
+  type: 'setMaxTime',
+  value: number,
 }
 
 
@@ -134,29 +127,65 @@ function modelReducer(model: ModelContextType, action: ModelAction) {
       };
     }
     case 'compile': {
+      model.inputs?.destroy();
+      model.outputs?.destroy();
+      model.timepoints?.destroy();
+      model.solver?.destroy();
       return {
         ...model,
         compiling: true,
+        solver: undefined,
+        inputs: undefined,
+        outputs: undefined,
+        timepoints: undefined,
       };
     }
     case 'compiled': {
+      const options = new Options({});
+      let solver = new Solver(options);
+      console.log('solver', solver.number_of_outputs, model.code)
+      const times = new Vector([0, 1]);
+      const outputs = new Vector(Array(times.length() * solver.number_of_outputs).fill(0.0));
+      const inputs = new Vector(Array(solver.number_of_inputs).fill(1.0));
+      const lowerBound = Array(solver.number_of_inputs).fill(0.0);
+      const upperBound = Array(solver.number_of_inputs).fill(2.0);
+      console.log('compiled', solver.number_of_outputs);
+      solver.solve(times, inputs, outputs)
+      
       return {
         ...model,
         compiling: false,
-        timepoints: action.times,
-        outputs: action.outputs,
-        inputs: action.inputs,
-        lowerBound: action.lowerBound,
-        upperBound: action.upperBound,
-        Solver: action.solver,
+        timepoints: times,
+        outputs: outputs,
+        inputs: inputs,
+        lowerBound: lowerBound,
+        upperBound: upperBound,
+        solver: solver,
       };
     }
     case 'setInput': {
-      const newInputs = model.inputs;
+      if (model.inputs === undefined) {
+        throw Error('inputs not defined');
+      }
+      if (model.outputs == undefined) {
+        throw Error('outputs not defined');
+      }
+      if (model.solver === undefined) {
+        throw Error('solver not defined');
+      }
+      if (model.timepoints === undefined) {
+        throw Error('timepoints not defined');
+      }
+      const newInputs = model.inputs.getFloat64Array();
       newInputs[action.index] = action.value;
+      const lastTimePoint = model.timepoints.get(model.timepoints.length() - 1);
+      model.timepoints.resize(2);
+      let newTimes = model.timepoints.getFloat64Array();
+      newTimes[0] = 0;
+      newTimes[1] = lastTimePoint;
+      model.solver.solve(model.timepoints, model.inputs, model.outputs)
       return {
         ...model,
-        inputs: newInputs,
       };
     }
     case 'setLowerBound': {
@@ -173,6 +202,19 @@ function modelReducer(model: ModelContextType, action: ModelAction) {
       return {
         ...model,
         upper_bound: newUpperBound,
+      };
+    }
+    case 'setMaxTime': {
+      if (model.timepoints === undefined || model.outputs === undefined || model.solver === undefined || model.inputs === undefined) {
+        throw Error('timepoints not defined');
+      }
+      model.timepoints.resize(2);
+      let newTimes = model.timepoints.getFloat64Array();
+      newTimes[0] = 0;
+      newTimes[1] = action.value;
+      model.solver.solve(model.timepoints, model.inputs, model.outputs)
+      return {
+        ...model,
       };
     }
     default: {
