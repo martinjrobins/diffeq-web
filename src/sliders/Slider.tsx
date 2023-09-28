@@ -15,7 +15,7 @@ function Slider({ value, index, lowerBound, upperBound, onSliderChange, onLowerB
   const step = (upperBound - lowerBound) / 100;
 
   return (
-    <Box sx={{ width: 250 }}>
+    <Box sx={{ width: '100% '}}>
       <Typography id="input-slider" gutterBottom>
         { `input[${index}]`} 
       </Typography>
@@ -24,7 +24,7 @@ function Slider({ value, index, lowerBound, upperBound, onSliderChange, onLowerB
           <Input
             value={lowerBound}
             size="small"
-            onBlur={onLowerBoundChange}
+            onChange={onLowerBoundChange}
             inputProps={{
               step: 10,
               min: 0,
@@ -48,7 +48,7 @@ function Slider({ value, index, lowerBound, upperBound, onSliderChange, onLowerB
           <Input
             value={upperBound}
             size="small"
-            onBlur={onUpperBoundChange}
+            onChange={onUpperBoundChange}
             inputProps={{
               step: 10,
               min: 0,

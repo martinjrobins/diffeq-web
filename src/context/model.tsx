@@ -18,7 +18,7 @@ const defaultCode = `in = [r, k]
 r { 1 }
 k { 1 }
 u_i {
-  y = 1,
+  y = 0.1,
   z = 0,
 }
 dudt_i {
@@ -35,7 +35,6 @@ G_i {
 }
 out_i {
     y,
-    z,
 }`;
 
 export const defaultModel: ModelContextType = {
@@ -76,8 +75,22 @@ export function ModelProvider({ children }: { children: React.ReactNode} ) {
         return;
       }
       dispatch(action);
+
       compileModel(model.code).then(() => {
-        dispatch({ type: 'compiled' });
+
+        model.inputs?.destroy();
+        model.outputs?.destroy();
+        model.timepoints?.destroy();
+        model.solver?.destroy()
+
+        const options = new Options({});
+        let solver = new Solver(options);
+        const timepoints = new Vector([0, 1]);
+        const outputs = new Vector(Array(timepoints.length() * solver.number_of_outputs).fill(0.0));
+        const inputs = new Vector(Array(solver.number_of_inputs).fill(1.0));
+        const lowerBound = Array(solver.number_of_inputs).fill(0.0);
+        const upperBound = Array(solver.number_of_inputs).fill(2.0);
+        dispatch({ type: 'compiled', solver, inputs, outputs, timepoints, lowerBound, upperBound });
       });
     } else {
       dispatch(action);
@@ -112,6 +125,12 @@ type ModelAction = {
   index: number,
 } | {
   type: 'compiled', 
+  solver: Solver,
+  inputs: Vector,
+  outputs: Vector,
+  timepoints: Vector,
+  lowerBound: number[],
+  upperBound: number[],
 } | {
   type: 'setMaxTime',
   value: number,
@@ -127,40 +146,32 @@ function modelReducer(model: ModelContextType, action: ModelAction) {
       };
     }
     case 'compile': {
-      model.inputs?.destroy();
-      model.outputs?.destroy();
-      model.timepoints?.destroy();
-      model.solver?.destroy();
       return {
         ...model,
         compiling: true,
-        solver: undefined,
-        inputs: undefined,
-        outputs: undefined,
-        timepoints: undefined,
       };
     }
     case 'compiled': {
-      const options = new Options({});
-      let solver = new Solver(options);
-      console.log('solver', solver.number_of_outputs, model.code)
-      const times = new Vector([0, 1]);
-      const outputs = new Vector(Array(times.length() * solver.number_of_outputs).fill(0.0));
-      const inputs = new Vector(Array(solver.number_of_inputs).fill(1.0));
-      const lowerBound = Array(solver.number_of_inputs).fill(0.0);
-      const upperBound = Array(solver.number_of_inputs).fill(2.0);
-      console.log('compiled', solver.number_of_outputs);
-      solver.solve(times, inputs, outputs)
+      
+      // make sure we have 2 timepoints
+      let newTimes = action.timepoints.getFloat64Array();
+      const lastTimePoint = newTimes[newTimes.length - 1];
+      action.timepoints.resize(2);
+      newTimes = action.timepoints.getFloat64Array();
+      newTimes[0] = 0;
+      newTimes[1] = lastTimePoint;
+
+      action.solver.solve(action.timepoints, action.inputs, action.outputs)
       
       return {
         ...model,
         compiling: false,
-        timepoints: times,
-        outputs: outputs,
-        inputs: inputs,
-        lowerBound: lowerBound,
-        upperBound: upperBound,
-        solver: solver,
+        timepoints: action.timepoints,
+        outputs: action.outputs,
+        inputs: action.inputs,
+        lowerBound: action.lowerBound,
+        upperBound: action.upperBound,
+        solver: action.solver,
       };
     }
     case 'setInput': {
@@ -193,15 +204,13 @@ function modelReducer(model: ModelContextType, action: ModelAction) {
       newLowerBound[action.index] = action.value;
       return {
         ...model,
-        lower_bound: newLowerBound,
+        lowerBound: newLowerBound,
       };
     }
     case 'setUpperBound': {
-      const newUpperBound = model.upperBound;
-      newUpperBound[action.index] = action.value;
+      model.upperBound[action.index] = action.value;
       return {
         ...model,
-        upper_bound: newUpperBound,
       };
     }
     case 'setMaxTime': {

@@ -27,6 +27,7 @@ function Sliders() {
     dispatch({ type: 'setLowerBound', value: newValue, index: i});
   }
   const handleUpperBoundChange= (i: number) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    console.log('upper bound change', i);
     const newValue = parseFloat(e.target.value);
     dispatch({ type: 'setUpperBound', value: newValue, index: i});
   }

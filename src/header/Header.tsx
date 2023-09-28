@@ -11,13 +11,11 @@ export default function ButtonAppBar() {
 
   // compile the model on first load
   useEffect(() => {
-    console.log('compiling on first load');
     dispatch({ type: 'compile' });
   }, []);
 
   // compile the model on click
   const handleCompile = () => {
-    console.log('compiling on click');
     dispatch({ type: 'compile' });
   }
   return (

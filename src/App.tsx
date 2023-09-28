@@ -11,13 +11,11 @@ import { useEffect } from 'react';
 
 
 function App() {
-  console.log('app')
-
   return (
     <ThemeProvider theme={theme}>
     <ModelProvider>
       <Box sx={{
-        height: '100vh',
+        height: '94vh',
         width: '100vw',
       }}>
       <Header />
