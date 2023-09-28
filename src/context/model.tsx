@@ -1,5 +1,5 @@
 import { Dispatch, createContext, useContext, useReducer } from 'react';
-import { compileModel, compileResponse, Solver, Options, Vector } from '@martinjrobins/diffeq-js';
+import { compileModel, Solver, Options, Vector } from '@martinjrobins/diffeq-js';
 
 
 type ModelContextType = {
@@ -178,7 +178,7 @@ function modelReducer(model: ModelContextType, action: ModelAction) {
       if (model.inputs === undefined) {
         throw Error('inputs not defined');
       }
-      if (model.outputs == undefined) {
+      if (model.outputs === undefined) {
         throw Error('outputs not defined');
       }
       if (model.solver === undefined) {

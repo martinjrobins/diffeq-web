@@ -12,7 +12,7 @@ export default function ButtonAppBar() {
   // compile the model on first load
   useEffect(() => {
     dispatch({ type: 'compile' });
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // compile the model on click
   const handleCompile = () => {

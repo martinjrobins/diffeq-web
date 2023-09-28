@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { Config, Data, Layout } from 'plotly.js';
 import { useModel } from '../context/model';
 import Plot from 'react-plotly.js';
