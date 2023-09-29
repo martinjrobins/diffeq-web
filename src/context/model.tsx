@@ -1,6 +1,5 @@
 import { Dispatch, createContext, useContext, useReducer } from 'react';
 import { compileModel, Solver, Options, Vector } from '@martinjrobins/diffeq-js';
-import { error } from 'console';
 
 
 type ModelContextType = {
