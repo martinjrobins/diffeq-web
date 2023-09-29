@@ -265,6 +265,7 @@ function modelReducer(model: ModelContextType, action: ModelAction) : ModelConte
       return {
         ...model,
         compileError: action.error,
+        compiling: false,
       };
     }
     default: {
