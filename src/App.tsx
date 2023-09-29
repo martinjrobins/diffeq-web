@@ -7,6 +7,8 @@ import { ModelProvider } from './context/model';
 import { Allotment } from 'allotment';
 import "allotment/dist/style.css";
 import Chart from './chart/Chart';
+import Errors from './errors/Errors';
+import Help from './help/Help';
 
 
 function App() {
@@ -19,7 +21,20 @@ function App() {
       }}>
       <Header />
       <Allotment vertical={false} >
-        <Editor />
+        <Allotment vertical={true} >
+          <Allotment.Pane preferredSize={'40%'}>
+            <Editor />
+          </Allotment.Pane>
+          <Allotment.Pane preferredSize={'40%'}>
+            <Help />
+          </Allotment.Pane>
+          <Allotment.Pane preferredSize={'10%'}>
+            <Errors type={'compile'} />
+          </Allotment.Pane>
+          <Allotment.Pane preferredSize={'10%'}>
+            <Errors type={'solve'} />
+          </Allotment.Pane>
+        </Allotment>
         <Allotment vertical={true} >
           <Sliders/>
           <Chart />

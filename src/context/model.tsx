@@ -1,5 +1,6 @@
 import { Dispatch, createContext, useContext, useReducer } from 'react';
 import { compileModel, Solver, Options, Vector } from '@martinjrobins/diffeq-js';
+import { error } from 'console';
 
 
 type ModelContextType = {
@@ -10,7 +11,8 @@ type ModelContextType = {
   timepoints: Vector | undefined;
   solver: Solver | undefined;
   code: string;
-  error: string | undefined;
+  solveError: string | undefined;
+  compileError: string | undefined;
   compiling: boolean;
 }
 
@@ -44,7 +46,8 @@ export const defaultModel: ModelContextType = {
   upperBound: Array(0),
   timepoints: undefined,
   code: defaultCode,
-  error: undefined,
+  solveError: undefined,
+  compileError: undefined,
   compiling: false,
   solver: undefined,
 };
@@ -91,6 +94,11 @@ export function ModelProvider({ children }: { children: React.ReactNode} ) {
         const lowerBound = Array(solver.number_of_inputs).fill(0.0);
         const upperBound = Array(solver.number_of_inputs).fill(2.0);
         dispatch({ type: 'compiled', solver, inputs, outputs, timepoints, lowerBound, upperBound });
+      }).catch((e) => {
+        // if string
+        if (typeof e === 'string') {
+          dispatch({ type: 'setCompileError', error: e });
+        }
       });
     } else {
       dispatch(action);
@@ -134,10 +142,13 @@ type ModelAction = {
 } | {
   type: 'setMaxTime',
   value: number,
-}
+} | {
+  type: 'setCompileError',
+  error: string,
+};
 
 
-function modelReducer(model: ModelContextType, action: ModelAction) {
+function modelReducer(model: ModelContextType, action: ModelAction) : ModelContextType {
   switch (action.type) {
     case 'setCode': {
       return {
@@ -161,7 +172,14 @@ function modelReducer(model: ModelContextType, action: ModelAction) {
       newTimes[0] = 0;
       newTimes[1] = lastTimePoint;
 
-      action.solver.solve(action.timepoints, action.inputs, action.outputs)
+      let error = undefined;
+      try {
+        action.solver.solve(action.timepoints, action.inputs, action.outputs)
+      } catch (e) {
+        if (e instanceof Error) {
+          error = e.toString();
+        }
+      }
       
       return {
         ...model,
@@ -172,6 +190,8 @@ function modelReducer(model: ModelContextType, action: ModelAction) {
         lowerBound: action.lowerBound,
         upperBound: action.upperBound,
         solver: action.solver,
+        solveError: error,
+        compileError: undefined,
       };
     }
     case 'setInput': {
@@ -194,9 +214,17 @@ function modelReducer(model: ModelContextType, action: ModelAction) {
       let newTimes = model.timepoints.getFloat64Array();
       newTimes[0] = 0;
       newTimes[1] = lastTimePoint;
-      model.solver.solve(model.timepoints, model.inputs, model.outputs)
+      let error = undefined;
+      try {
+        model.solver.solve(model.timepoints, model.inputs, model.outputs)
+      } catch (e) {
+        if (e instanceof Error) {
+          error = e.toString();
+        }
+      }
       return {
         ...model,
+        solveError: error,
       };
     }
     case 'setLowerBound': {
@@ -221,9 +249,23 @@ function modelReducer(model: ModelContextType, action: ModelAction) {
       let newTimes = model.timepoints.getFloat64Array();
       newTimes[0] = 0;
       newTimes[1] = action.value;
-      model.solver.solve(model.timepoints, model.inputs, model.outputs)
+      let error = undefined;
+      try {
+        model.solver.solve(model.timepoints, model.inputs, model.outputs)
+      } catch (e) {
+        if (e instanceof Error) {
+          error = e.toString();
+        }
+      }
       return {
         ...model,
+        solveError: error,
+      };
+    }
+    case 'setCompileError': {
+      return {
+        ...model,
+        compileError: action.error,
       };
     }
     default: {

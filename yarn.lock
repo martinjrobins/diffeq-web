@@ -1915,10 +1915,10 @@
   resolved "https://registry.yarnpkg.com/@mapbox/whoots-js/-/whoots-js-3.1.0.tgz#497c67a1cef50d1a2459ba60f315e448d2ad87fe"
   integrity sha512-Es6WcD0nO5l+2BOQS4uLfNPYQaNDfbot3X1XUoloz+x0mPDS3eeORZJl06HXjwBG1fOGwCRnzK88LMdxKRrd6Q==
 
-"@martinjrobins/diffeq-js@^0.0.8":
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/@martinjrobins/diffeq-js/-/diffeq-js-0.0.8.tgz#bf101133cc4988792f9b3a7bae5cd46c26c51fc9"
-  integrity sha512-c4QzcAI+JobNpf8KhdUcpz8qobHwWfTXxziI/H48rxWSIxvOTXwWFuXrQKb+kpdQ0E1+roxu0xQrDDOzkn96ZQ==
+"@martinjrobins/diffeq-js@^0.0.9":
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/@martinjrobins/diffeq-js/-/diffeq-js-0.0.9.tgz#00e71665ba478f91d3925554226565ca7cacbdbc"
+  integrity sha512-+kjOMp/y+faB/60BUTViHsH3N8VpLy+PU1EfvRJxenFFoFHzI9QrXqS6w6tqazdRlGetCHdIKbhHmoR5fFzE0g==
   dependencies:
     "@bjorn3/browser_wasi_shim" "^0.2.14"
 
@@ -2613,6 +2613,13 @@
   version "18.2.7"
   resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-18.2.7.tgz#67222a08c0a6ae0a0da33c3532348277c70abb63"
   integrity sha512-GRaAEriuT4zp9N4p1i8BDBYmEyfo+xQ3yHjJU4eiK5NDa1RmUZG+unZABUTK4/Ox/M+GaHwb6Ow8rUITrtjszA==
+  dependencies:
+    "@types/react" "*"
+
+"@types/react-latex@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@types/react-latex/-/react-latex-2.0.1.tgz#a95fcb9b7a340392f03e8864af96047601a410b8"
+  integrity sha512-u8g/FmCICxrsYs8iHAllAkzUS2q81x0rS5AYYrvecMRBdhv5qXeuJiS5xEAjIposMFHvRJEDpbb5W1NaQv0Atw==
   dependencies:
     "@types/react" "*"
 
@@ -4001,7 +4008,7 @@ combined-stream@^1.0.8:
   dependencies:
     delayed-stream "~1.0.0"
 
-commander@2, commander@^2.15.1, commander@^2.20.0:
+commander@2, commander@^2.15.1, commander@^2.19.0, commander@^2.20.0:
   version "2.20.3"
   resolved "https://registry.yarnpkg.com/commander/-/commander-2.20.3.tgz#fd485e84c03eb4881c20722ba48035e8531aeb33"
   integrity sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==
@@ -7570,6 +7577,13 @@ jsonpointer@^5.0.0:
     object.assign "^4.1.4"
     object.values "^1.1.6"
 
+katex@^0.10.2:
+  version "0.10.2"
+  resolved "https://registry.yarnpkg.com/katex/-/katex-0.10.2.tgz#39973edbb65eda5b6f9e7f41648781e557dd4932"
+  integrity sha512-cQOmyIRoMloCoSIOZ1+gEwsksdJZ1EW4SWm3QzxSza/QsnZr6D4U1V9S4q+B/OLm2OQ8TCBecQ8MaIfnScI7cw==
+  dependencies:
+    commander "^2.19.0"
+
 kdbush@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/kdbush/-/kdbush-3.0.0.tgz#f8484794d47004cc2d85ed3a79353dbe0abc2bf0"
@@ -9380,6 +9394,13 @@ react-is@^18.0.0, react-is@^18.2.0:
   version "18.2.0"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-18.2.0.tgz#199431eeaaa2e09f86427efbb4f1473edb47609b"
   integrity sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==
+
+react-latex@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/react-latex/-/react-latex-2.0.0.tgz#b040e9e2232bcca80c4632fb76a67e1f16eaec2d"
+  integrity sha512-x17uDCfqBgR+5ZF/zplRCuHdEbX22CJlVipOqMUinRMoiOwh5fr3jbjD4zqVQ8pIs4AnF0BWPDR2S7Fyd8Snxw==
+  dependencies:
+    katex "^0.10.2"
 
 react-plotly.js@^2.6.0:
   version "2.6.0"

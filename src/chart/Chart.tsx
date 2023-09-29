@@ -1,7 +1,7 @@
 import { Config, Data, Layout } from 'plotly.js';
 import { useModel } from '../context/model';
 import Plot from 'react-plotly.js';
-import { CircularProgress } from '@mui/material';
+import { Box, CircularProgress } from '@mui/material';
 
 function Chart() {
   let model = useModel();
@@ -63,14 +63,20 @@ function Chart() {
     displaylogo: false,
   }
    return (
-    <div>
+    <Box
+      sx={{
+        width: '100%',
+        height: '100%',
+        overflow: 'auto',
+      }}
+    >
       <Plot
         data={plotData}
         layout={plotLayout}
         style={{ width: '100%', height: '100%' }}
         config={config}
       />
-    </div>
+    </Box>
   );
 }
 export default Chart;

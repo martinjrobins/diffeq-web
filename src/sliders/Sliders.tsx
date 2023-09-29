@@ -1,7 +1,7 @@
 import React from 'react';
 import { useModel, useModelDispatch } from '../context/model';
 import Slider from './Slider';
-import { CircularProgress, Stack, TextField } from '@mui/material';
+import { Box, CircularProgress, Stack, TextField } from '@mui/material';
 
 function Sliders() {
   const dispatch = useModelDispatch();
@@ -36,6 +36,13 @@ function Sliders() {
     dispatch({ type: 'setMaxTime', value: newValue});
   }
   return (
+    <Box
+      sx={{
+        width: '100%',
+        height: '100%',
+        overflow: 'auto',
+      }}
+    >
     <Stack spacing={2} sx={{ mx: 1 }}>
     { inputsArray.map((input, i) => (
       <div key={i}>
@@ -44,6 +51,7 @@ function Sliders() {
     ))}
     <TextField onChange={handleMaxTimeChange} value={maxTime} label="max time" InputProps={{ type: 'number' }}/>
     </Stack>
+    </Box>
   );
 }
 export default Sliders;

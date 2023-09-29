@@ -1,5 +1,4 @@
 {
-
   "name": "diffeq-web",
   "homepage": "https://martinjrobins.github.io/diffeq-web/",
   "version": "0.1.0",
@@ -7,7 +6,7 @@
   "dependencies": {
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
-    "@martinjrobins/diffeq-js": "^0.0.8",
+    "@martinjrobins/diffeq-js": "^0.0.9",
     "@mui/icons-material": "^5.14.11",
     "@mui/material": "^5.14.11",
     "@testing-library/jest-dom": "^5.14.1",
@@ -22,6 +21,7 @@
     "plotly.js": "^2.26.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-latex": "^2.0.0",
     "react-plotly.js": "^2.6.0",
     "react-scripts": "5.0.1",
     "source-map-explorer": "^2.5.3",
@@ -56,6 +56,7 @@
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@types/plotly.js": "^2.12.27",
+    "@types/react-latex": "^2.0.1",
     "@types/react-plotly.js": "^2.6.1"
   }
 }

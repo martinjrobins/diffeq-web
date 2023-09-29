@@ -1,6 +1,7 @@
 import React from 'react';
 import CodeMirror, { ViewUpdate } from '@uiw/react-codemirror';
 import { useModel, useModelDispatch } from '../context/model';
+import { Box } from '@mui/material';
 
 function Editor() {
   const dispatch = useModelDispatch();
@@ -9,6 +10,13 @@ function Editor() {
     dispatch({ type: 'setCode', code: val });
   };
   return (
+    <Box
+      sx={{
+        width: '100%',
+        height: '100%',
+        overflow: 'auto',
+      }}
+    >
     <CodeMirror
       value={code}
       width="100%"
@@ -21,6 +29,7 @@ function Editor() {
       onChange={onChange}
 
     />
+    </Box>
   );
 }
 export default Editor;
