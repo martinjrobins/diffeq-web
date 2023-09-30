@@ -12,6 +12,7 @@ type ModelContextType = {
   code: string;
   solveError: string | undefined;
   compileError: string | undefined;
+  serverError: string | undefined;
   compiling: boolean;
 }
 
@@ -47,6 +48,7 @@ export const defaultModel: ModelContextType = {
   code: defaultCode,
   solveError: undefined,
   compileError: undefined,
+  serverError: undefined,
   compiling: false,
   solver: undefined,
 };
@@ -97,6 +99,10 @@ export function ModelProvider({ children }: { children: React.ReactNode} ) {
         // if string
         if (typeof e === 'string') {
           dispatch({ type: 'setCompileError', error: e });
+        } else if (e instanceof Error) {
+          dispatch({ type: 'setServerError', error: e.toString() });
+        } else {
+          dispatch({ type: 'setServerError', error: 'Unknown error' });
         }
       });
     } else {
@@ -144,6 +150,9 @@ type ModelAction = {
 } | {
   type: 'setCompileError',
   error: string,
+} | {
+  type: 'setServerError',
+  error: string | undefined,
 };
 
 
@@ -265,6 +274,13 @@ function modelReducer(model: ModelContextType, action: ModelAction) : ModelConte
       return {
         ...model,
         compileError: action.error,
+        compiling: false,
+      };
+    }
+    case 'setServerError': {
+      return {
+        ...model,
+        serverError: action.error,
         compiling: false,
       };
     }
