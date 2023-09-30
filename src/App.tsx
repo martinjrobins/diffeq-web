@@ -9,6 +9,7 @@ import "allotment/dist/style.css";
 import Chart from './chart/Chart';
 import Errors from './errors/Errors';
 import Help from './help/Help';
+import ServerErrorDialog from './errors/ServerErrorDialog';
 
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
         width: '100vw',
       }}>
       <Header />
+      <ServerErrorDialog />
       <Allotment vertical={false} >
         <Allotment vertical={true} >
           <Allotment.Pane preferredSize={'40%'}>

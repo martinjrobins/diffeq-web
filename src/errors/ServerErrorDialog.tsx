@@ -1,6 +1,7 @@
-import { Dialog, DialogTitle } from "@mui/material";
+import { Dialog, DialogContent, DialogTitle } from "@mui/material";
 import ServerError from "./ServerError";
 import { useModel, useModelDispatch } from "../context/model";
+import React from "react";
 
 const ServerErrorDialog = () => {
   const model = useModel();
@@ -13,7 +14,7 @@ const ServerErrorDialog = () => {
   return (
     <Dialog onClose={handleClose} open={open}>
       <DialogTitle>Unexpected Error</DialogTitle>
-      <ServerError />
+      <DialogContent><ServerError /></DialogContent>
     </Dialog>
   )
 };
