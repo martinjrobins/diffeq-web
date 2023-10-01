@@ -42,6 +42,7 @@ function Slider({ value, index, lowerBound, upperBound, onSliderChange, onLowerB
             step={step}
             onChange={onSliderChange}
             aria-labelledby="input-slider"
+            valueLabelDisplay="auto"
           />
         </Grid>
         <Grid item>
