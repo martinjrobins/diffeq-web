@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/diffeq-web/static/css/main.a89d48eb.css",
-    "main.js": "/diffeq-web/static/js/main.ef08abc8.js",
+    "main.js": "/diffeq-web/static/js/main.c52b4f16.js",
     "static/js/787.b50e9ec5.chunk.js": "/diffeq-web/static/js/787.b50e9ec5.chunk.js",
     "index.html": "/diffeq-web/index.html",
     "main.a89d48eb.css.map": "/diffeq-web/static/css/main.a89d48eb.css.map",
-    "main.ef08abc8.js.map": "/diffeq-web/static/js/main.ef08abc8.js.map",
+    "main.c52b4f16.js.map": "/diffeq-web/static/js/main.c52b4f16.js.map",
     "787.b50e9ec5.chunk.js.map": "/diffeq-web/static/js/787.b50e9ec5.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.a89d48eb.css",
-    "static/js/main.ef08abc8.js"
+    "static/js/main.c52b4f16.js"
   ]
 }
