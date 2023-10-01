@@ -23,7 +23,7 @@ const Help = () => {
         <li><Code>{"u_i { y = 0.1, z = 0 }"}</Code> defines the state vector with a single dimension indexed by <Code>i</Code>, it has two elements labelled <Code>y</Code> and <Code>z</Code>, which are given values 0.1 and 0</li>
         <li><Code>{"out_i { y }"}</Code> defines the output vector (shown in the plot to the right). This vector only has one element with a value <Code>y</Code> (defined previously as the first element of the state vector).</li>
       </ul>
-      <p>Try to change the equations solved and then hit the save button in the top left hand corner of your screen to compile the system. If there are no errors you will be able to adjust the input paramters via the sliders on the top right, and see the solution of your DAE system in the plot on the right. If you need to ajust the time duration to solve the system over, use the "max time" input field below the sliders</p>
+      <p>Try to change the equations solved and then hit the save button in the top left hand corner of your screen to compile the system. If there are no errors you will be able to adjust the input paramters via the sliders on the top right, and see the solution of your DAE system in the plot on the right. If you need to adjust the time duration to solve the system over, use the "max time" input field below the sliders</p>
       <p>For more information, please contact the author of this page, Martin Robinson (<a href="https://github.com/martinjrobins">github</a>, <a href="mailto:martinjrobins@gmail.com">email</a>).</p>
       
     </Box>
