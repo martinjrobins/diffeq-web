@@ -6,32 +6,58 @@ import { Box, CircularProgress } from '@mui/material';
 function Chart() {
   let model = useModel();
 
-  if (model.timepoints === undefined || model.outputs === undefined || model.solver === undefined) {
+  if (model.timepoints === undefined || model.outputs === undefined || model.doutputs === undefined || model.solver === undefined) {
     return ( <CircularProgress /> );
   }
 
   const times = Array.from(model.timepoints.getFloat64Array());
   const outputs_array = model.outputs.getFloat64Array();
-  const outputs = Array.from({ length: model.solver.number_of_outputs }).map((_, i) => {
+  const doutputs_array = model.doutputs.getFloat64Array();
+  const noutputs = model.solver.number_of_outputs;
+  const convert_to_array = (array: Float64Array) => {
+    return Array.from({ length: noutputs }).map((_, i) => {
       if (model.outputs === undefined || model.timepoints === undefined || model.solver === undefined) {
         return [];
       }
       const number_of_timepoints = model.timepoints.length();
       let output: number[] = Array(number_of_timepoints);
       for (let j = 0; j < number_of_timepoints; j++) {
-        output[j] = outputs_array[j * model.solver.number_of_outputs + i];
+        output[j] = array[j * model.solver.number_of_outputs + i];
       }
       return output;
-  })
+    })
+  }
 
-  const plotData: Data[] = outputs.map((output, i) => {
-    return {
+  const outputs = convert_to_array(outputs_array);
+  const doutputs = convert_to_array(doutputs_array);
+  let plotData: Data[] = [];
+  for (let i = 0; i < noutputs; i++) {
+    // lower bound
+    plotData.push({
       x: times,
-      y: output,
+      y: outputs[i].map((o, j) => o - doutputs[i][j]),
+      type: 'scatter',
+      name: `out${i}-l`,
+    });
+    
+    // upper bound
+    plotData.push({
+      x: times,
+      y: outputs[i].map((o, j) => o + doutputs[i][j]),
+      type: 'scatter',
+      fill: 'tonexty',
+      name: `out${i}-u`,
+    });
+
+    // output
+    plotData.push({
+      x: times,
+      y: outputs[i],
       type: 'scatter',
       name: `out${i}`,
-    }
-  });
+    });
+  }
+
     
   const plotLayout: Partial<Layout> = {
     legend: {

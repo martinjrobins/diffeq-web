@@ -4,9 +4,11 @@ import { compileModel, Solver, Options, Vector } from '@martinjrobins/diffeq-js'
 
 type ModelContextType = {
   inputs: Vector | undefined;
+  dinputs: Vector | undefined;
   lowerBound: number[];
   upperBound: number[];
   outputs: Vector | undefined;
+  doutputs: Vector | undefined;
   timepoints: Vector | undefined;
   solver: Solver | undefined;
   code: string;
@@ -41,7 +43,9 @@ out_i {
 
 export const defaultModel: ModelContextType = {
   inputs: undefined,
+  dinputs: undefined,
   outputs: undefined,
+  doutputs: undefined,
   lowerBound: Array(0),
   upperBound: Array(0),
   timepoints: undefined,
@@ -83,18 +87,22 @@ export function ModelProvider({ children }: { children: React.ReactNode} ) {
       compileModel(model.code).then(() => {
 
         model.inputs?.destroy();
+        model.dinputs?.destroy();
         model.outputs?.destroy();
+        model.doutputs?.destroy();
         model.timepoints?.destroy();
         model.solver?.destroy()
 
-        const options = new Options({});
+        const options = new Options({ fwd_sens: true });
         let solver = new Solver(options);
         const timepoints = new Vector([0, 1]);
         const outputs = new Vector(Array(timepoints.length() * solver.number_of_outputs).fill(0.0));
+        const doutputs = new Vector(Array(timepoints.length() * solver.number_of_outputs).fill(0.0));
         const inputs = new Vector(Array(solver.number_of_inputs).fill(1.0));
+        const dinputs = new Vector(Array(solver.number_of_inputs).fill(0.0));
         const lowerBound = Array(solver.number_of_inputs).fill(0.0);
         const upperBound = Array(solver.number_of_inputs).fill(2.0);
-        dispatch({ type: 'compiled', solver, inputs, outputs, timepoints, lowerBound, upperBound });
+        dispatch({ type: 'compiled', solver, inputs, dinputs, outputs, doutputs, timepoints, lowerBound, upperBound });
       }).catch((e) => {
         // if string
         if (typeof e === 'string') {
@@ -127,6 +135,7 @@ type ModelAction = {
 } | {
   type: 'setInput',
   value: number,
+  dvalue: number,
   index: number,
 } | {
   type: 'setLowerBound',
@@ -140,7 +149,9 @@ type ModelAction = {
   type: 'compiled', 
   solver: Solver,
   inputs: Vector,
+  dinputs: Vector,
   outputs: Vector,
+  doutputs: Vector,
   timepoints: Vector,
   lowerBound: number[],
   upperBound: number[],
@@ -182,7 +193,7 @@ function modelReducer(model: ModelContextType, action: ModelAction) : ModelConte
 
       let error = undefined;
       try {
-        action.solver.solve(action.timepoints, action.inputs, action.outputs)
+        action.solver.solve_with_sensitivities(action.timepoints, action.inputs, action.dinputs, action.outputs, action.doutputs)
       } catch (e) {
         if (e instanceof Error) {
           error = e.toString();
@@ -194,7 +205,9 @@ function modelReducer(model: ModelContextType, action: ModelAction) : ModelConte
         compiling: false,
         timepoints: action.timepoints,
         outputs: action.outputs,
+        doutputs: action.doutputs,
         inputs: action.inputs,
+        dinputs: action.dinputs,
         lowerBound: action.lowerBound,
         upperBound: action.upperBound,
         solver: action.solver,
@@ -206,8 +219,14 @@ function modelReducer(model: ModelContextType, action: ModelAction) : ModelConte
       if (model.inputs === undefined) {
         throw Error('inputs not defined');
       }
+      if (model.dinputs === undefined) {
+        throw Error('dinputs not defined');
+      }
       if (model.outputs === undefined) {
         throw Error('outputs not defined');
+      }
+      if (model.doutputs === undefined) {
+        throw Error('doutputs not defined');
       }
       if (model.solver === undefined) {
         throw Error('solver not defined');
@@ -216,7 +235,9 @@ function modelReducer(model: ModelContextType, action: ModelAction) : ModelConte
         throw Error('timepoints not defined');
       }
       const newInputs = model.inputs.getFloat64Array();
+      const newdInputs = model.dinputs.getFloat64Array();
       newInputs[action.index] = action.value;
+      newdInputs[action.index] = action.dvalue;
       const lastTimePoint = model.timepoints.get(model.timepoints.length() - 1);
       model.timepoints.resize(2);
       let newTimes = model.timepoints.getFloat64Array();
@@ -224,7 +245,7 @@ function modelReducer(model: ModelContextType, action: ModelAction) : ModelConte
       newTimes[1] = lastTimePoint;
       let error = undefined;
       try {
-        model.solver.solve(model.timepoints, model.inputs, model.outputs)
+        model.solver.solve_with_sensitivities(model.timepoints, model.inputs, model.dinputs, model.outputs, model.doutputs)
       } catch (e) {
         if (e instanceof Error) {
           error = e.toString();

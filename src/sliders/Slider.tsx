@@ -1,18 +1,31 @@
-import { Box, Grid, Input, Slider as MuiSlider, Typography } from '@mui/material';
-import { ChangeEvent } from 'react';
+import { Check } from '@mui/icons-material';
+import { Box, Checkbox, FormControlLabel, Grid, Input, Slider as MuiSlider, Typography } from '@mui/material';
+import { ChangeEvent, MouseEventHandler, useState } from 'react';
 
 interface SliderProps {
-  value: number | number[];
+  value: number;
+  dvalue: number;
   lowerBound: number;
   upperBound: number;
   index: number;
-  onSliderChange: (event: Event, newValue: number | number[]) => void;
+  onSliderChange: (event: Event | undefined, newValue: number | number[]) => void;
   onLowerBoundChange: (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   onUpperBoundChange: (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
 }
 
-function Slider({ value, index, lowerBound, upperBound, onSliderChange, onLowerBoundChange, onUpperBoundChange}: SliderProps) {
+function Slider({ value, dvalue, index, lowerBound, upperBound, onSliderChange, onLowerBoundChange, onUpperBoundChange}: SliderProps) {
   const step = (upperBound - lowerBound) / 100;
+  const [isRange, setIsRange] = useState<boolean>(false);
+  const sliderValues = isRange ? [value - dvalue, value + dvalue] : value;
+  const handleRangeClick = () => {
+    if (isRange) {
+      onSliderChange(undefined, value);
+      setIsRange(false);
+    } else {
+      onSliderChange(undefined, [value, value]);
+      setIsRange(true);
+    }
+  }
 
   return (
     <Box sx={{ width: '100% '}}>
@@ -36,7 +49,7 @@ function Slider({ value, index, lowerBound, upperBound, onSliderChange, onLowerB
         </Grid>
         <Grid item xs>
           <MuiSlider
-            value={typeof value === 'number' ? value : 0}
+            value={sliderValues}
             min={lowerBound}
             max={upperBound}
             step={step}
@@ -58,6 +71,9 @@ function Slider({ value, index, lowerBound, upperBound, onSliderChange, onLowerB
               'aria-labelledby': 'input-slider',
             }}
           />
+        </Grid>
+        <Grid item>
+          <FormControlLabel control={<Checkbox checked={isRange} onClick={handleRangeClick} />} label="Range" />
         </Grid>
       </Grid>
     </Box>

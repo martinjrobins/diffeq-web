@@ -6,18 +6,24 @@ import { Box, CircularProgress, Stack, TextField } from '@mui/material';
 function Sliders() {
   const dispatch = useModelDispatch();
   const model = useModel();
-  if (model.inputs === undefined || model.timepoints === undefined) {
+  if (model.inputs === undefined || model.dinputs === undefined || model.timepoints === undefined) {
     return ( <CircularProgress /> );
   }
   const times = model.timepoints.getFloat64Array();
   const maxTime = times[times.length - 1];
   const inputs = model.inputs.getFloat64Array();
+  const dinputs = model.dinputs.getFloat64Array();
   const lowerBound = model.lowerBound;
   const upperBound = model.upperBound;
   const inputsArray = Array.from(inputs);
-  const handleSliderChange = (i: number) => (e: Event, newValue: number | number[]) => {
+  const dinputsArray = Array.from(dinputs);
+  const handleSliderChange = (i: number) => (e: Event | undefined, newValue: number | number[]) => {
     if (typeof newValue === 'number') {
-      dispatch({ type: 'setInput', value: newValue, index: i});
+      dispatch({ type: 'setInput', value: newValue, dvalue: 0.0, index: i});
+    } else if (Array.isArray(newValue)) {
+      const value = 0.5 * (newValue[0] + newValue[1]);
+      const dvalue = 0.5 * (newValue[1] - newValue[0]);
+      dispatch({ type: 'setInput', value, dvalue, index: i});
     } else {
       console.error('error should not get a number[]');
     }
@@ -46,7 +52,7 @@ function Sliders() {
     <Stack spacing={2} sx={{ mx: 1 }}>
     { inputsArray.map((input, i) => (
       <div key={i}>
-      <Slider value={input} index={i} lowerBound={lowerBound[i]} upperBound={upperBound[i]} onSliderChange={handleSliderChange(i)} onLowerBoundChange={handleLowerBoundChange(i)} onUpperBoundChange={handleUpperBoundChange(i)} />
+      <Slider value={input} dvalue={dinputsArray[i]} index={i} lowerBound={lowerBound[i]} upperBound={upperBound[i]} onSliderChange={handleSliderChange(i)} onLowerBoundChange={handleLowerBoundChange(i)} onUpperBoundChange={handleUpperBoundChange(i)} />
       </div>
     ))}
     <TextField onChange={handleMaxTimeChange} value={maxTime} label="max time" InputProps={{ type: 'number' }}/>
