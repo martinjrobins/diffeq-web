@@ -1,6 +1,5 @@
-import { Check } from '@mui/icons-material';
 import { Box, Checkbox, FormControlLabel, Grid, Input, Slider as MuiSlider, Typography } from '@mui/material';
-import { ChangeEvent, MouseEventHandler, useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 
 interface SliderProps {
   value: number;
