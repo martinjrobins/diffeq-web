@@ -19,11 +19,14 @@ function Sliders() {
   const dinputsArray = Array.from(dinputs);
   const handleSliderChange = (i: number) => (e: Event | undefined, newValue: number | number[]) => {
     if (typeof newValue === 'number') {
-      dispatch({ type: 'setInput', value: newValue, dvalue: 0.0, index: i});
-    } else if (Array.isArray(newValue)) {
-      const value = 0.5 * (newValue[0] + newValue[1]);
-      const dvalue = 0.5 * (newValue[1] - newValue[0]);
-      dispatch({ type: 'setInput', value, dvalue, index: i});
+      dispatch({ type: 'setInput', value: newValue, dvalue: dinputsArray[i], index: i});
+    } else {
+      console.error('error should not get a number[]');
+    }
+  }
+  const handleDeltaSliderChange = (i: number) => (e: Event | undefined, newValue: number | number[]) => {
+    if (typeof newValue === 'number') {
+      dispatch({ type: 'setInput', value: inputsArray[i], dvalue: newValue, index: i});
     } else {
       console.error('error should not get a number[]');
     }
@@ -52,7 +55,8 @@ function Sliders() {
     <Stack spacing={2} sx={{ mx: 1 }}>
     { inputsArray.map((input, i) => (
       <div key={i}>
-      <Slider value={input} dvalue={dinputsArray[i]} index={i} lowerBound={lowerBound[i]} upperBound={upperBound[i]} onSliderChange={handleSliderChange(i)} onLowerBoundChange={handleLowerBoundChange(i)} onUpperBoundChange={handleUpperBoundChange(i)} />
+        <Slider value={input} index={i} lowerBound={lowerBound[i]} upperBound={upperBound[i]} onSliderChange={handleSliderChange(i)} onLowerBoundChange={handleLowerBoundChange(i)} onUpperBoundChange={handleUpperBoundChange(i)} isDelta={false}/>
+        <Slider value={dinputsArray[i]} index={i} lowerBound={lowerBound[i]} upperBound={upperBound[i]} onSliderChange={handleDeltaSliderChange(i)} onLowerBoundChange={handleLowerBoundChange(i)} onUpperBoundChange={handleUpperBoundChange(i)} isDelta={true} />
       </div>
     ))}
     <TextField onChange={handleMaxTimeChange} value={maxTime} label="max time" InputProps={{ type: 'number' }}/>

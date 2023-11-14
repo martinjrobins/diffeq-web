@@ -3,6 +3,19 @@ import { useModel } from '../context/model';
 import Plot from 'react-plotly.js';
 import { Box, CircularProgress } from '@mui/material';
 
+const plotlyColors = [
+  '#1f77b4',  // muted blue
+  '#ff7f0e',  // safety orange
+  '#2ca02c',  // cooked asparagus green
+  '#d62728',  // brick red
+  '#9467bd',  // muted purple
+  '#8c564b',  // chestnut brown
+  '#e377c2',  // raspberry yogurt pink
+  '#7f7f7f',  // middle gray
+  '#bcbd22',  // curry yellow-green
+  '#17becf'
+]
+
 function Chart() {
   let model = useModel();
 
@@ -32,21 +45,16 @@ function Chart() {
   const doutputs = convert_to_array(doutputs_array);
   let plotData: Data[] = [];
   for (let i = 0; i < noutputs; i++) {
-    // lower bound
-    plotData.push({
-      x: times,
-      y: outputs[i].map((o, j) => o - doutputs[i][j]),
-      type: 'scatter',
-      name: `out${i}-l`,
-    });
-    
     // upper bound
     plotData.push({
       x: times,
       y: outputs[i].map((o, j) => o + doutputs[i][j]),
       type: 'scatter',
-      fill: 'tonexty',
-      name: `out${i}-u`,
+      mode: 'lines',
+      showlegend: false,
+      line: {
+        color: plotlyColors[i] + '33',
+      },
     });
 
     // output
@@ -54,7 +62,12 @@ function Chart() {
       x: times,
       y: outputs[i],
       type: 'scatter',
-      name: `out${i}`,
+      fill: 'tonexty',
+      name: `out${i} + dout${i}`,
+      fillcolor: plotlyColors[i] + '33',
+      line: {
+        color: plotlyColors[i],
+      },
     });
   }
 

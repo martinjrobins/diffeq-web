@@ -1,35 +1,28 @@
 import { Box, Checkbox, FormControlLabel, Grid, Input, Slider as MuiSlider, Typography } from '@mui/material';
 import { ChangeEvent, useState } from 'react';
+import Code from '../help/Code';
+import Latex from 'react-latex';
 
 interface SliderProps {
   value: number;
-  dvalue: number;
   lowerBound: number;
   upperBound: number;
   index: number;
   onSliderChange: (event: Event | undefined, newValue: number | number[]) => void;
   onLowerBoundChange: (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   onUpperBoundChange: (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  isDelta: boolean
 }
 
-function Slider({ value, dvalue, index, lowerBound, upperBound, onSliderChange, onLowerBoundChange, onUpperBoundChange}: SliderProps) {
+function Slider({ value, index, lowerBound, upperBound, onSliderChange, onLowerBoundChange, onUpperBoundChange, isDelta}: SliderProps) {
   const step = (upperBound - lowerBound) / 100;
-  const [isRange, setIsRange] = useState<boolean>(false);
-  const sliderValues = isRange ? [value - dvalue, value + dvalue] : value;
-  const handleRangeClick = () => {
-    if (isRange) {
-      onSliderChange(undefined, value);
-      setIsRange(false);
-    } else {
-      onSliderChange(undefined, [value, value]);
-      setIsRange(true);
-    }
-  }
+  const sliderValues = value;
+  const label = isDelta ? `\$\\delta i_${index}\$` : `\$i_${index}\$`;
 
   return (
     <Box sx={{ width: '100% '}}>
       <Typography id="input-slider" gutterBottom>
-        { `input[${index}]`} 
+        <Latex>{label}</Latex>
       </Typography>
       <Grid container spacing={2} alignItems="center">
         <Grid item>
@@ -70,9 +63,6 @@ function Slider({ value, dvalue, index, lowerBound, upperBound, onSliderChange, 
               'aria-labelledby': 'input-slider',
             }}
           />
-        </Grid>
-        <Grid item>
-          <FormControlLabel control={<Checkbox checked={isRange} onClick={handleRangeClick} />} label="Range" />
         </Grid>
       </Grid>
     </Box>
