@@ -16,7 +16,7 @@ interface SliderProps {
 function Slider({ value, index, lowerBound, upperBound, onSliderChange, onLowerBoundChange, onUpperBoundChange, isDelta}: SliderProps) {
   const step = (upperBound - lowerBound) / 100;
   const sliderValues = value;
-  const label = isDelta ? `$\\delta i_${index}$` : `$i_${index}$`;
+  const label = isDelta ? `$\\delta x_${index}$` : `$x_${index}$`;
 
   return (
     <Box sx={{ width: '100% '}}>

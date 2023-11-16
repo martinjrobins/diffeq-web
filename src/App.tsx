@@ -27,13 +27,13 @@ function App() {
           <Allotment.Pane preferredSize={'35%'}>
             <Editor />
           </Allotment.Pane>
-          <Allotment.Pane preferredSize={'47%'}>
+          <Allotment.Pane preferredSize={'49%'}>
             <Help />
           </Allotment.Pane>
-          <Allotment.Pane preferredSize={'9%'}>
+          <Allotment.Pane preferredSize={'8%'}>
             <Errors type={'compile'} />
           </Allotment.Pane>
-          <Allotment.Pane preferredSize={'9%'}>
+          <Allotment.Pane preferredSize={'8%'}>
             <Errors type={'solve'} />
           </Allotment.Pane>
         </Allotment>
