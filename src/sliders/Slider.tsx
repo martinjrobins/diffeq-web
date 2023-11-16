@@ -1,6 +1,5 @@
-import { Box, Checkbox, FormControlLabel, Grid, Input, Slider as MuiSlider, Typography } from '@mui/material';
-import { ChangeEvent, useState } from 'react';
-import Code from '../help/Code';
+import { Box, Grid, Input, Slider as MuiSlider, Typography } from '@mui/material';
+import { ChangeEvent } from 'react';
 import Latex from 'react-latex';
 
 interface SliderProps {
@@ -17,7 +16,7 @@ interface SliderProps {
 function Slider({ value, index, lowerBound, upperBound, onSliderChange, onLowerBoundChange, onUpperBoundChange, isDelta}: SliderProps) {
   const step = (upperBound - lowerBound) / 100;
   const sliderValues = value;
-  const label = isDelta ? `\$\\delta i_${index}\$` : `\$i_${index}\$`;
+  const label = isDelta ? `$\\delta i_${index}$` : `$i_${index}$`;
 
   return (
     <Box sx={{ width: '100% '}}>
