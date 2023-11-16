@@ -24,16 +24,16 @@ function App() {
       <ServerErrorDialog />
       <Allotment vertical={false} >
         <Allotment vertical={true} >
-          <Allotment.Pane preferredSize={'40%'}>
+          <Allotment.Pane preferredSize={'35%'}>
             <Editor />
           </Allotment.Pane>
-          <Allotment.Pane preferredSize={'40%'}>
+          <Allotment.Pane preferredSize={'47%'}>
             <Help />
           </Allotment.Pane>
-          <Allotment.Pane preferredSize={'10%'}>
+          <Allotment.Pane preferredSize={'9%'}>
             <Errors type={'compile'} />
           </Allotment.Pane>
-          <Allotment.Pane preferredSize={'10%'}>
+          <Allotment.Pane preferredSize={'9%'}>
             <Errors type={'solve'} />
           </Allotment.Pane>
         </Allotment>
