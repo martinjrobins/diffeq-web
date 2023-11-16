@@ -26,14 +26,13 @@ const Help = () => {
 
       <p>The sliders on the top right section of the page allow you to adjust
       the input parameters, given by the vector <Latex>{'$\\mathbf{x}$'}</Latex> (in the default model <Latex>{'$\\mathbf{x} = [r, k]$'}</Latex>) and see the effect
-      on the output vector <Latex>{'$\\mathbf{y}$'}</Latex> (in the default model <Latex>{'$\\mathbf{y} = [y]$'}</Latex>). If we consider a delta change in the
-      inputs <Latex>{'$\\delta \\mathbf{x}$'}</Latex>, this will give rise to a delta change in the
-      outputs <Latex>{'$\\delta \\mathbf{y} = J \\delta \\mathbf{x}$'}</Latex>, 
-      where <Latex>{'$$J = \\frac{\\partial \\mathbf{y}}{\\partial \\mathbf{x}}$$'}</Latex> is
-      the jacobian (this is often called forward sensitivity analysis for ODE models). There are two sliders for each input element, one for the
-      value <Latex>{'$x_i$'}</Latex> and another for the delta value <Latex>{'$\\delta x_i$'}</Latex>, and you can change
-      both of these to see the effect on the the output values <Latex>{'$y_i$'}</Latex> and delta
-      output <Latex>{'$\\delta y_i$'}</Latex> in the plot (note that we use the text "out"/"dout" rather than the latex symbols <Latex>{'$y_i$'}</Latex>/<Latex>{'$\\delta y_i$'}</Latex> in the plot labels).</p>
+      on the output vector <Latex>{'$\\mathbf{y}$'}</Latex> (in the default model <Latex>{'$\\mathbf{y} = [y]$'}</Latex>). 
+      If we consider a solve of the DAE model to be a function <Latex>{'$\\mathbf{y} = f(\\mathbf{x})$'}</Latex>, then we might be interested in the jacobian matrix <Latex>{'$J = \\partial f(\\mathbf{x})$'}</Latex>. One way to calculate this jacobian is to define a tangent input 
+      vector <Latex>{'$\\delta \\mathbf{x}$'}</Latex> which is related to a tangent output vector via <Latex>{'$\\delta \\mathbf{y} = J \\delta \\mathbf{x}$'}</Latex> (this is similar to forward 
+      sensitivity analysis for ODE models, and is the basis of forward-mode automatic differentiation). There are two sliders for each input element, one for the
+      value <Latex>{'$x_i$'}</Latex> and another for the tangent value <Latex>{'$\\delta x_i$'}</Latex>, and you can change
+      both of these to see the effect on the the output values <Latex>{'$y_i$'}</Latex> and tangent
+      output <Latex>{'$\\delta y_i$'}</Latex> in the plot (note due to limitations in the plotting library used, we use the text "out"/"dout" rather than the latex symbols <Latex>{'$y_i$'}</Latex>/<Latex>{'$\\delta y_i$'}</Latex> in the plot labels).</p>
 
       <p>Try to change the equations solved and then hit the save button in the
       top left hand corner of your screen to compile the system. If there are no
