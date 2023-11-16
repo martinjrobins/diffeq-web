@@ -28,7 +28,7 @@ const Help = () => {
       the input parameters, given by the vector <Latex>{'$\\mathbf{x}$'}</Latex> (in the default model <Latex>{'$\\mathbf{x} = [r, k]$'}</Latex>) and see the effect
       on the output vector <Latex>{'$\\mathbf{y}$'}</Latex> (in the default model <Latex>{'$\\mathbf{y} = [y]$'}</Latex>). 
       If we consider a solve of the DAE model to be a function <Latex>{'$\\mathbf{y} = f(\\mathbf{x})$'}</Latex>, then we might be interested in the jacobian matrix <Latex>{'$J = \\partial f(\\mathbf{x})$'}</Latex>. One way to calculate this jacobian is to define a tangent input 
-      vector <Latex>{'$\\delta \\mathbf{x}$'}</Latex> which is related to a tangent output vector via <Latex>{'$\\delta \\mathbf{y} = J \\delta \\mathbf{x}$'}</Latex> (this is similar to forward 
+      vector <Latex>{'$\\delta \\mathbf{x}$'}</Latex> which is related to a tangent output vector via <Latex>{'$\\delta \\mathbf{y} = J \\delta \\mathbf{x}$'}</Latex> (this is related to forward 
       sensitivity analysis for ODE models, and is the basis of forward-mode automatic differentiation). There are two sliders for each input element, one for the
       value <Latex>{'$x_i$'}</Latex> and another for the tangent value <Latex>{'$\\delta x_i$'}</Latex>, and you can change
       both of these to see the effect on the the output values <Latex>{'$y_i$'}</Latex> and tangent
