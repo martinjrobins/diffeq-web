@@ -10,7 +10,7 @@ function Sliders() {
     return ( <CircularProgress /> );
   }
   const times = model.timepoints.getFloat64Array();
-  const maxTime = times[times.length - 1];
+  const maxTime = model.maxTime;
   const inputs = model.inputs.getFloat64Array();
   const dinputs = model.dinputs.getFloat64Array();
   const lowerBound = model.lowerBound;

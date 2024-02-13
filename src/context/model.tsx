@@ -10,6 +10,7 @@ type ModelContextType = {
   outputs: Vector | undefined;
   doutputs: Vector | undefined;
   timepoints: Vector | undefined;
+  maxTime: number;
   solver: Solver | undefined;
   code: string;
   solveError: string | undefined;
@@ -50,6 +51,7 @@ export const defaultModel: ModelContextType = {
   upperBound: Array(0),
   timepoints: undefined,
   code: defaultCode,
+  maxTime: 10,
   solveError: undefined,
   compileError: undefined,
   serverError: undefined,
@@ -93,9 +95,9 @@ export function ModelProvider({ children }: { children: React.ReactNode} ) {
         model.timepoints?.destroy();
         model.solver?.destroy()
 
-        const options = new Options({ fwd_sens: true });
+        const options = new Options({ fwd_sens: true, fixed_times: false });
         let solver = new Solver(options);
-        const timepoints = new Vector([0, 10]);
+        const timepoints = new Vector([0, model.maxTime]);
         const outputs = new Vector(Array(timepoints.length() * solver.number_of_outputs).fill(0.0));
         const doutputs = new Vector(Array(timepoints.length() * solver.number_of_outputs).fill(0.0));
         const inputs = new Vector(Array(solver.number_of_inputs).fill(1.0));
@@ -184,12 +186,10 @@ function modelReducer(model: ModelContextType, action: ModelAction) : ModelConte
     case 'compiled': {
       
       // make sure we have 2 timepoints
-      let newTimes = action.timepoints.getFloat64Array();
-      const lastTimePoint = newTimes[newTimes.length - 1];
       action.timepoints.resize(2);
-      newTimes = action.timepoints.getFloat64Array();
+      let newTimes = action.timepoints.getFloat64Array();
       newTimes[0] = 0;
-      newTimes[1] = lastTimePoint;
+      newTimes[1] = model.maxTime;
 
       let error = undefined;
       try {
@@ -238,11 +238,11 @@ function modelReducer(model: ModelContextType, action: ModelAction) : ModelConte
       const newdInputs = model.dinputs.getFloat64Array();
       newInputs[action.index] = action.value;
       newdInputs[action.index] = action.dvalue;
-      const lastTimePoint = model.timepoints.get(model.timepoints.length() - 1);
+
       model.timepoints.resize(2);
       let newTimes = model.timepoints.getFloat64Array();
       newTimes[0] = 0;
-      newTimes[1] = lastTimePoint;
+      newTimes[1] = model.maxTime;
       let error = undefined;
       try {
         model.solver.solve_with_sensitivities(model.timepoints, model.inputs, model.dinputs, model.outputs, model.doutputs)
@@ -289,6 +289,7 @@ function modelReducer(model: ModelContextType, action: ModelAction) : ModelConte
       return {
         ...model,
         solveError: error,
+        maxTime: action.value,
       };
     }
     case 'setCompileError': {
