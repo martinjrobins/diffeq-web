@@ -9,7 +9,6 @@ function Sliders() {
   if (model.inputs === undefined || model.dinputs === undefined || model.timepoints === undefined) {
     return ( <CircularProgress /> );
   }
-  const times = model.timepoints.getFloat64Array();
   const maxTime = model.maxTime;
   const inputs = model.inputs.getFloat64Array();
   const dinputs = model.dinputs.getFloat64Array();
