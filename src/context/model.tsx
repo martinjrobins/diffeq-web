@@ -93,7 +93,8 @@ export function ModelProvider({ children }: { children: React.ReactNode} ) {
         model.outputs?.destroy();
         model.doutputs?.destroy();
         model.timepoints?.destroy();
-        model.solver?.destroy()
+        // todo: this crashes the app if the model is changed
+        //model.solver?.destroy()
 
         const options = new Options({ fwd_sens: true, fixed_times: false });
         let solver = new Solver(options);
