@@ -1923,10 +1923,10 @@
   resolved "https://registry.yarnpkg.com/@mapbox/whoots-js/-/whoots-js-3.1.0.tgz#497c67a1cef50d1a2459ba60f315e448d2ad87fe"
   integrity sha512-Es6WcD0nO5l+2BOQS4uLfNPYQaNDfbot3X1XUoloz+x0mPDS3eeORZJl06HXjwBG1fOGwCRnzK88LMdxKRrd6Q==
 
-"@martinjrobins/diffeq-js@^0.1.5":
-  version "0.1.5"
-  resolved "https://registry.yarnpkg.com/@martinjrobins/diffeq-js/-/diffeq-js-0.1.5.tgz#fddf53267136ebacd680569b748d0a07e4f7d184"
-  integrity sha512-zHfkhbpmsD9adDTzHDG4tMIjukIxo/fST1x9PioTLjx8ndRZPGlWu6xe63m2HwaFY8WjeNp7PUHs43U2yBL21A==
+"@martinjrobins/diffeq-js@^0.1.8":
+  version "0.1.8"
+  resolved "https://registry.yarnpkg.com/@martinjrobins/diffeq-js/-/diffeq-js-0.1.8.tgz#17a03f02491730a2b215845d5b3b50126163638f"
+  integrity sha512-4EsiOiUOUWYmQ8Tp/ou+cu5QDWOWOxH29yKVe7zZXORxMBUTbnCZ2Pp4MzNYEggQMGLCYfjwVt18wpRGrDDssw==
   dependencies:
     "@bjorn3/browser_wasi_shim" "^0.2.14"
 

@@ -96,7 +96,7 @@ export function ModelProvider({ children }: { children: React.ReactNode} ) {
         // todo: this crashes the app if the model is changed
         //model.solver?.destroy()
 
-        const options = new Options({ fwd_sens: true, fixed_times: false });
+        const options = new Options({ fwd_sens: true, fixed_times: false, max_out_steps: 100000 });
         let solver = new Solver(options);
         const timepoints = new Vector([0, model.maxTime]);
         const outputs = new Vector(Array(timepoints.length() * solver.number_of_outputs).fill(0.0));
