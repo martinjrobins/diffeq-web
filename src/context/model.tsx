@@ -30,11 +30,11 @@ dudt_i {
     dydt = 0,
     dzdt = 0,
 }
-F_i {
+M_i {
     dydt,
     0,
 }
-G_i {
+F_i {
     (r * y) * (1 - (y / k)),
     (2 * y) - z,
 }
@@ -86,7 +86,7 @@ export function ModelProvider({ children }: { children: React.ReactNode} ) {
       }
       dispatch(action);
 
-      compileModel(model.code).then(() => {
+      compileModel(model.code, "https://diffeq-backend-staging.fly.dev").then(() => {
 
         model.inputs?.destroy();
         model.dinputs?.destroy();
